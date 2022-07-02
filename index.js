@@ -1,7 +1,7 @@
 const express = require('express');
 const openid = require('openid-client');
 const cookieParser = require('cookie-parser');
-
+const jwt_decode = require('jwt-decode');
 const app = express();
 
 app.set('view engine', 'jade');
@@ -31,7 +31,7 @@ app.use(async (req, res, next) => {
 
 app.get('/', (req, res) => {
   const name = req.cookies.jwtSet ? 'user' : 'guest';
-
+  // console.log(req.cookies.jwtS);
   res.render('index', {
     name
   });
@@ -39,8 +39,15 @@ app.get('/', (req, res) => {
 
 app.get('/secret', (req, res) => {
   // Get JWT.
+  // console.log(req.cookies);
+  console.log(req.cookies.jwtSet);
   const jwtSet = req.cookies.jwtSet
     ? new openid.TokenSet(req.cookies.jwtSet) : undefined;
+
+    var token = req.cookies.jwtSet.access_token;
+    var decoded = jwt_decode(token);
+ 
+    console.log(decoded);
 
   // Make a little inspection on JWT claims
   // and render secret page if claims are correct,
